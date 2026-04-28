@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { LogOut, Plus, Trash2, Home, Check, RotateCcw, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
+import { LogOut, Plus, Trash2, Home, Check, RotateCcw, ChevronDown, ChevronUp, GripVertical, Layers } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Reorder, useDragControls } from 'framer-motion';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
@@ -14,7 +14,7 @@ import {
   seedDefaultMenu 
 } from '../lib/storage';
 
-// Separated Item Component for much better performance and smooth drag
+// Ürün Bileşeni
 function DraggableItem({
   item,
   handleFieldChange,
@@ -36,9 +36,6 @@ function DraggableItem({
       id={item.id}
       dragListener={false}
       dragControls={dragControls}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
       className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-gold-600/10 shadow-xl flex items-center gap-4 hover:border-gold-500/30 transition-colors"
     >
       <div
@@ -110,6 +107,7 @@ export default function Admin() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [categoriesOrder, setCategoriesOrder] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState<string | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
@@ -147,6 +145,8 @@ export default function Admin() {
       setMenuItems(items);
 
       const cats = Array.from(new Set(items.map(i => i.category)));
+      setCategoriesOrder(cats);
+
       const expanded: Record<string, boolean> = {};
       cats.forEach(c => expanded[c] = true);
       setExpandedCategories(expanded);
@@ -174,44 +174,62 @@ export default function Admin() {
     }
   };
 
-  // Reorder ONLY updates local state for maximum fluid performance
-  // Actual database sync happens after a small delay (debounce)
-  const handleReorder = (category: string, newOrder: MenuItem[]) => {
-    const updatedAllItems = [...menuItems];
-    const otherItems = updatedAllItems.filter(i => i.category !== category);
-
-    // Assign new local orders
-    const reorderedInCategory = newOrder.map((item, index) => ({
-      ...item,
-      order: index
-    }));
-
-    const finalItems = [...otherItems, ...reorderedInCategory].sort((a, b) => {
-       if (a.category === b.category) return a.order - b.order;
-       return 0; // Keep current category blocks
-    });
-
-    setMenuItems(finalItems);
-
-    // Debounced Firebase Sync
+  const syncAllOrders = async (items: MenuItem[]) => {
+    // Debounced Firebase Sync for all modified orders
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(async () => {
-      for (const item of reorderedInCategory) {
+      for (const item of items) {
         const { id, ...data } = item;
         await updateMenuItem(id, data);
       }
-    }, 1500); // Wait 1.5s after last move to save to DB
+    }, 2000);
+  };
+
+  const handleItemReorder = (category: string, newOrder: MenuItem[]) => {
+    const otherItems = menuItems.filter(i => i.category !== category);
+    const reorderedInCategory = newOrder.map((item, index) => ({ ...item, order: index }));
+
+    // Recalculate global orders based on category list
+    const finalItems: MenuItem[] = [];
+    let currentGlobalOrder = 0;
+
+    categoriesOrder.forEach(cat => {
+      const categoryItems = cat === category ? reorderedInCategory : menuItems.filter(i => i.category === cat);
+      categoryItems.forEach(item => {
+        finalItems.push({ ...item, order: currentGlobalOrder++ });
+      });
+    });
+
+    setMenuItems(finalItems);
+    syncAllOrders(finalItems);
+  };
+
+  const handleCategoryReorder = (newCatOrder: string[]) => {
+    setCategoriesOrder(newCatOrder);
+
+    // Recalculate all items' global order based on new category sequence
+    const finalItems: MenuItem[] = [];
+    let currentGlobalOrder = 0;
+
+    newCatOrder.forEach(cat => {
+      const categoryItems = menuItems.filter(i => i.category === cat);
+      categoryItems.forEach(item => {
+        finalItems.push({ ...item, order: currentGlobalOrder++ });
+      });
+    });
+
+    setMenuItems(finalItems);
+    syncAllOrders(finalItems);
   };
 
   const handleAddNew = async (category?: string) => {
-    const itemsInCategory = menuItems.filter(i => i.category === (category || 'Dönerler'));
     const newItem = {
       name: 'Yeni Ürün',
-      description: 'Açıklama yazın...',
+      description: 'Açıklama...',
       price: 0,
-      category: category || menuItems[0]?.category || 'Dönerler',
+      category: category || categoriesOrder[0] || 'Dönerler',
       isAvailable: true,
-      order: itemsInCategory.length
+      order: menuItems.length
     };
     try {
       await addMenuItem(newItem);
@@ -230,13 +248,6 @@ export default function Admin() {
         alert('Silinemedi');
       }
     }
-  };
-
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
   };
 
   if (isLoading && !user) {
@@ -260,8 +271,6 @@ export default function Admin() {
     );
   }
 
-  const categoriesList = Array.from(new Set(menuItems.map(item => item.category)));
-
   return (
     <div className="min-h-screen bg-[#111] text-[#E0E0E0] font-sans pb-40 overflow-x-hidden">
       <header className="fixed top-0 inset-x-0 bg-black/80 backdrop-blur-md border-b border-gold-600/30 z-50 py-3 px-4 flex justify-between items-center shadow-md">
@@ -269,7 +278,7 @@ export default function Admin() {
           <Link to="/" className="text-gold-500 p-2 bg-neutral-900/50 rounded-full hover:bg-neutral-800 transition">
             <Home size={20} />
           </Link>
-          <span className="font-bold text-gold-500 text-sm tracking-widest uppercase">Düzenleme Modu</span>
+          <span className="font-bold text-gold-500 text-sm tracking-widest uppercase">Yönetici</span>
         </div>
         <img src={logoUrl} alt="Logo" className="h-12 object-contain" />
         <button onClick={() => signOut(auth)} className="p-2 text-neutral-400 hover:text-umutred-600 transition">
@@ -278,49 +287,58 @@ export default function Admin() {
       </header>
 
       <main className="max-w-3xl mx-auto mt-24 px-4">
-        {categoriesList.map((category) => (
-          <div key={category} className="mb-10">
-            <div
-              className="flex justify-between items-center bg-neutral-900/80 p-4 rounded-xl border border-gold-600/30 mb-4 sticky top-20 z-30 backdrop-blur-sm cursor-pointer"
-              onClick={() => toggleCategory(category)}
-            >
-              <div className="flex items-center gap-3">
-                {expandedCategories[category] ? <ChevronUp size={20} className="text-gold-500" /> : <ChevronDown size={20} className="text-gold-500" />}
-                <h2 className="text-lg font-bold text-white uppercase tracking-widest">{category}</h2>
+        {/* Kategori Sürükleme Grubu */}
+        <Reorder.Group axis="y" values={categoriesOrder} onReorder={handleCategoryReorder} className="space-y-12">
+          {categoriesOrder.map((category) => (
+            <Reorder.Item key={category} value={category} className="relative">
+              {/* Kategori Başlığı (Sürükleme Tutamacı ile) */}
+              <div
+                className="flex justify-between items-center bg-neutral-900/90 p-4 rounded-xl border border-gold-600/30 mb-4 sticky top-20 z-30 backdrop-blur-md"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="cursor-grab active:cursor-grabbing text-gold-600 hover:text-gold-400 p-1">
+                    <Layers size={22} />
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => setExpandedCategories(p => ({...p, [category]: !p[category]}))}>
+                    {expandedCategories[category] ? <ChevronUp size={18} className="text-neutral-500" /> : <ChevronDown size={18} className="text-neutral-500" />}
+                    <h2 className="text-lg font-bold text-white uppercase tracking-widest">{category}</h2>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleAddNew(category)}
+                  className="text-gold-500 hover:bg-gold-500/10 p-2 rounded-lg transition"
+                >
+                  <Plus size={20} />
+                </button>
               </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleAddNew(category); }}
-                className="text-gold-500 hover:bg-gold-500/10 p-2 rounded-lg transition"
-              >
-                <Plus size={20} />
-              </button>
-            </div>
 
-            {expandedCategories[category] && (
-              <Reorder.Group
-                axis="y"
-                values={menuItems.filter(i => i.category === category)}
-                onReorder={(newOrder) => handleReorder(category, newOrder)}
-                className="space-y-4"
-              >
-                {menuItems.filter(i => i.category === category).map((item) => (
-                  <DraggableItem
-                    key={item.id}
-                    item={item}
-                    handleFieldChange={handleFieldChange}
-                    saveChanges={saveChanges}
-                    handleDelete={handleDelete}
-                    isSaving={isSaving === item.id}
-                  />
-                ))}
-              </Reorder.Group>
-            )}
-          </div>
-        ))}
+              {/* Kategori İçindeki Ürünler Sürükleme Grubu */}
+              {expandedCategories[category] && (
+                <Reorder.Group
+                  axis="y"
+                  values={menuItems.filter(i => i.category === category)}
+                  onReorder={(newOrder) => handleItemReorder(category, newOrder)}
+                  className="space-y-4 px-2"
+                >
+                  {menuItems.filter(i => i.category === category).map((item) => (
+                    <DraggableItem
+                      key={item.id}
+                      item={item}
+                      handleFieldChange={handleFieldChange}
+                      saveChanges={saveChanges}
+                      handleDelete={handleDelete}
+                      isSaving={isSaving === item.id}
+                    />
+                  ))}
+                </Reorder.Group>
+              )}
+            </Reorder.Item>
+          ))}
+        </Reorder.Group>
 
         {menuItems.length === 0 && !isLoading && (
           <div className="text-center py-20 bg-neutral-900/30 rounded-3xl border border-dashed border-neutral-800 mt-10">
-            <p className="text-neutral-500 mb-6 font-medium">Menüde ürün bulunmuyor.</p>
+            <p className="text-neutral-500 mb-6 font-medium">Menü boş.</p>
             <button onClick={() => seedDefaultMenu().then(loadMenu)} className="bg-gold-500 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 mx-auto">
               <RotateCcw size={20} /> VARSAYILAN MENÜYÜ YÜKLE
             </button>
@@ -336,7 +354,7 @@ export default function Admin() {
       </main>
 
       <div className="fixed bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black to-transparent pointer-events-none">
-         <p className="text-center text-[10px] text-neutral-600 pointer-events-auto">Sürükleyerek sıralayabilirsiniz. Değişiklikler otomatik kaydedilir.</p>
+         <p className="text-center text-[10px] text-neutral-600 pointer-events-auto">Kategorileri sol taraftaki ikonlardan tutup sürükleyebilirsiniz.</p>
       </div>
     </div>
   );
