@@ -48,7 +48,7 @@ export default function Home() {
               <span className="text-gold-500">Altın Standardı</span>
             </h1>
             <p className="text-xl text-neutral-100 max-w-lg font-medium leading-relaxed drop-shadow-lg">
-               Yılların tecrübesiyle, özenle seçilen etleri ustalıkla işliyor; geleneksel döner lezzetini en doğal haliyle sunuyoruz. Her lokmada kalite ve güveni hissedin.
+               Ustalıkla hazırlanan döner, özenle seçilen malzemeler ve değişmeyen kalite anlayışı.
             </p>
             <div className="flex gap-4 pt-6">
               <Link to="/menu" className="bg-gold-500 text-black px-8 py-3.5 rounded-xl font-bold hover:bg-gold-400 transition-all shadow-xl shadow-gold-500/20 hover:shadow-gold-500/40 text-lg">
