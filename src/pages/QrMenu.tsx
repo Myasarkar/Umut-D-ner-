@@ -65,14 +65,17 @@ export default function QrMenu() {
   const itemsInCurrentCategory = menuItems.filter(item => item.category === currentCategory);
 
   const getCategoryBackground = (category: string) => {
-    const cat = category.toLowerCase();
-    if (cat.includes('et döner')) return 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('tavuk döner')) return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
+    const cat = category.toLowerCase().trim();
+    // Improved matching logic with direct and broad matches
+    if (cat.includes('et d')) return 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('tavuk d')) return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
     if (cat.includes('kebap')) return 'https://images.unsplash.com/photo-1663152778174-8b6eeae03578?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('sulu yemek')) return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
     if (cat.includes('meze') || cat.includes('soğuk')) return 'https://images.unsplash.com/photo-1606756891040-3ee96cb17cdd?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('içecek')) return 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=2000&auto=format&fit=crop';
-    return 'https://images.unsplash.com/photo-1644408107567-2f3b9cd41eb4?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=2000&auto=format&fit=crop';
+
+    // Generic fallback for any other category
+    return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
   };
 
   const bgImage = getCategoryBackground(currentCategory);
