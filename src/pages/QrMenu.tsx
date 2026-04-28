@@ -90,7 +90,7 @@ export default function QrMenu() {
 
     // İçecekler (Turkish character robust matching)
     if (cat.includes('icecek') || cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran') || cat.includes('su'))
-      return 'https://i.pinimg.com/originals/76/9f/8b/769f8baa785689025317a8bd00830eef.jpg';
+      return 'https://i.pinimg.com/originals/07/14/38/071438c061390e83b8b0443f2b8358d9.jpg';
 
     return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
   };
