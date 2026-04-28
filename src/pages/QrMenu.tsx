@@ -83,7 +83,7 @@ export default function QrMenu() {
     if (cat.includes('meze') || cat.includes('soğuk')) return 'https://i.pinimg.com/1200x/e4/d9/97/e4d9978b7cd818e8c4432aef5e86469e.jpg';
 
     // İçecekler
-    if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://i.pinimg.com/736x/76/9f/8b/769f8baa785689025317a8bd00830eef.jpg';
 
     // Varsayılan
     return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
