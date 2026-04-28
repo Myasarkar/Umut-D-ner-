@@ -68,24 +68,30 @@ export default function QrMenu() {
     const cat = category.toLowerCase().trim();
 
     // Et Döner
-    if (cat.includes('et d')) return 'https://i.pinimg.com/1200x/0f/d8/2c/0fd82cc19c5142bd469562bf465d5dcd.jpg';
+    if (cat.includes('et') && cat.includes('d'))
+      return 'https://i.pinimg.com/originals/0f/d8/2c/0fd82cc19c5142bd469562bf465d5dcd.jpg';
 
     // Tavuk Döner
-    if (cat.includes('tavuk d')) return 'https://i.pinimg.com/736x/25/3d/47/253d478a16313622a9785c378be12603.jpg';
+    if (cat.includes('tavuk'))
+      return 'https://i.pinimg.com/originals/25/3d/47/253d478a16313622a9785c378be12603.jpg';
 
     // Kebap
-    if (cat.includes('kebap')) return 'https://i.pinimg.com/1200x/02/61/4f/02614f78d76f6415cb97d691c90dd1ee.jpg';
+    if (cat.includes('kebap'))
+      // Using original resolution links for better stability
+      return 'https://i.pinimg.com/originals/02/61/4f/02614f78d76f6415cb97d691c90dd1ee.jpg';
 
     // Sulu Yemek
-    if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('sulu') || cat.includes('yemek'))
+      return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2000&auto=format&fit=crop';
 
     // Meze
-    if (cat.includes('meze') || cat.includes('soğuk')) return 'https://i.pinimg.com/1200x/e4/d9/97/e4d9978b7cd818e8c4432aef5e86469e.jpg';
+    if (cat.includes('meze') || cat.includes('soğuk'))
+      return 'https://i.pinimg.com/originals/e4/d9/97/e4d9978b7cd818e8c4432aef5e86469e.jpg';
 
-    // İçecekler
-    if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://i.pinimg.com/736x/76/9f/8b/769f8baa785689025317a8bd00830eef.jpg';
+    // İçecekler (Turkish character robust matching)
+    if (cat.includes('icecek') || cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran') || cat.includes('su'))
+      return 'https://i.pinimg.com/originals/76/9f/8b/769f8baa785689025317a8bd00830eef.jpg';
 
-    // Varsayılan
     return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
   };
 
