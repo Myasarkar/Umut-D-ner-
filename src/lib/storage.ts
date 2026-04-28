@@ -40,14 +40,11 @@ export async function getMenuItems(): Promise<MenuItem[]> {
       items.push({ id: doc.id, ...doc.data() } as MenuItem);
     });
 
-    if (items.length === 0) {
-      return DEFAULT_MENU;
-    }
-
+    // Removed: if (items.length === 0) { return DEFAULT_MENU; }
     return items;
   } catch (e) {
     console.error('Error fetching menu items:', e);
-    return DEFAULT_MENU;
+    return []; // Return empty instead of default to trigger seed button
   }
 }
 
@@ -87,13 +84,11 @@ export async function seedDefaultMenu() {
   if (!hasFirebaseConfig) throw new Error("Firebase not configured");
   try {
     const batch = writeBatch(db);
-    const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
-    querySnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
 
+    // Use a fixed set of items to avoid confusion
     DEFAULT_MENU.forEach((item) => {
       const { id, ...itemWithoutId } = item;
+      // Use addDoc style by creating a new doc ref without specifying ID
       const newDocRef = doc(collection(db, COLLECTION_NAME));
       batch.set(newDocRef, itemWithoutId);
     });
