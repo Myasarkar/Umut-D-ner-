@@ -71,7 +71,7 @@ export default function QrMenu() {
     if (cat.includes('et d')) return 'https://i.pinimg.com/1200x/0f/d8/2c/0fd82cc19c5142bd469562bf465d5dcd.jpg';
 
     // Tavuk Döner
-    if (cat.includes('tavuk d')) return 'https://i.pinimg.com/736x/95/30/31/953031a5a9a4f5a98b695ae4fc21e173.jpg';
+    if (cat.includes('tavuk d')) return 'https://i.pinimg.com/736x/25/3d/47/253d478a16313622a9785c378be12603.jpg';
 
     // Kebap
     if (cat.includes('kebap')) return 'https://i.pinimg.com/1200x/02/61/4f/02614f78d76f6415cb97d691c90dd1ee.jpg';
