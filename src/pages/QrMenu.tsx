@@ -66,15 +66,26 @@ export default function QrMenu() {
 
   const getCategoryBackground = (category: string) => {
     const cat = category.toLowerCase().trim();
-    // Improved matching logic with direct and broad matches
-    if (cat.includes('et d')) return 'https://images.unsplash.com/photo-1633321702518-7feccaf0e8a1?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('tavuk d')) return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('kebap')) return 'https://images.unsplash.com/photo-1663152778174-8b6eeae03578?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('meze') || cat.includes('soğuk')) return 'https://images.unsplash.com/photo-1606756891040-3ee96cb17cdd?q=80&w=2000&auto=format&fit=crop';
-    if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=2000&auto=format&fit=crop';
 
-    // Generic fallback for any other category
+    // Et Döner
+    if (cat.includes('et d')) return 'https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?q=80&w=2000&auto=format&fit=crop';
+
+    // Tavuk Döner
+    if (cat.includes('tavuk d')) return 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=2000&auto=format&fit=crop';
+
+    // Kebap
+    if (cat.includes('kebap')) return 'https://images.unsplash.com/photo-1544124499-58912cbddaad?q=80&w=2000&auto=format&fit=crop';
+
+    // Sulu Yemek
+    if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2000&auto=format&fit=crop';
+
+    // Meze
+    if (cat.includes('meze') || cat.includes('soğuk')) return 'https://images.unsplash.com/photo-1541529086526-db283c563270?q=80&w=2000&auto=format&fit=crop';
+
+    // İçecekler
+    if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?q=80&w=2000&auto=format&fit=crop';
+
+    // Varsayılan
     return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
   };
 
