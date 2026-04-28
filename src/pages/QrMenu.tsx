@@ -80,7 +80,7 @@ export default function QrMenu() {
     if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2000&auto=format&fit=crop';
 
     // Meze
-    if (cat.includes('meze') || cat.includes('soğuk')) return 'https://images.unsplash.com/photo-1541529086526-db283c563270?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('meze') || cat.includes('soğuk')) return 'https://i.pinimg.com/1200x/e4/d9/97/e4d9978b7cd818e8c4432aef5e86469e.jpg';
 
     // İçecekler
     if (cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran')) return 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?q=80&w=2000&auto=format&fit=crop';
