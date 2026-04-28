@@ -68,7 +68,7 @@ export default function QrMenu() {
     const cat = category.toLowerCase().trim();
 
     // Et Döner
-    if (cat.includes('et d')) return 'https://images.unsplash.com/photo-1633321088355-d0f81134ca3b?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('et d')) return 'https://i.pinimg.com/1200x/0f/d8/2c/0fd82cc19c5142bd469562bf465d5dcd.jpg';
 
     // Tavuk Döner
     if (cat.includes('tavuk d')) return 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?q=80&w=2000&auto=format&fit=crop';
