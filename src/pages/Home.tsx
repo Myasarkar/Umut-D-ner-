@@ -83,7 +83,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">Geleneksel Ustalık</h3>
               <p className="text-neutral-400 leading-relaxed text-sm">
-                Dönerimizi yıllardır değişmeyen özel reçetemizle, odun ateşinde ağır ağır pişiriyoruz. Lezzetimizin sırrı, etin seçiminden terbiyesine kadar her aşamadaki titizliğimizdir.
+                Dönerimizi yıllardır değişmeyen özel reçetemizle hazırlıyoruz. Lezzetimizin sırrı, etin seçiminden terbiyesine kadar her aşamadaki titizliğimizdir.
               </p>
             </div>
 
