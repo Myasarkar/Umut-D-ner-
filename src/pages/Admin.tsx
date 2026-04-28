@@ -31,8 +31,10 @@ export default function Admin() {
 
       if (currentUser) {
         // Check if the user email is authorized
-        const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-        if (currentUser.email === adminEmail || !adminEmail) {
+        const adminEmailConfig = import.meta.env.VITE_ADMIN_EMAIL || '';
+        const authorizedEmails = adminEmailConfig.split(',').map((email: string) => email.trim().toLowerCase());
+
+        if (authorizedEmails.includes(currentUser.email?.toLowerCase() || '') || !adminEmailConfig) {
           setIsAuthorized(true);
           loadMenu();
         } else {
