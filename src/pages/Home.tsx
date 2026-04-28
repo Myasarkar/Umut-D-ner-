@@ -29,7 +29,7 @@ export default function Home() {
       {/* Hero Section with Fixed Background */}
       <section className="relative min-h-[85vh] flex flex-col md:flex-row items-center overflow-hidden">
         {/* Background Image - Restricted to top part on mobile */}
-        <div className="absolute top-0 inset-x-0 h-[500px] md:h-full z-0">
+        <div className="absolute top-0 inset-x-0 h-[550px] md:h-full z-0">
           <img
             src={bg1}
             alt=""
