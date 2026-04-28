@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { LogOut, Plus, Trash2, Utensils, Home, Check, RotateCcw, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { LogOut, Plus, Trash2, Home, Check, RotateCcw, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Reorder } from 'framer-motion';
+import { Reorder, useDragControls } from 'framer-motion';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { auth, googleProvider, hasFirebaseConfig } from '../lib/firebase';
 import logoUrl from '../assets/Umutdoner_Logo.png';
@@ -14,6 +14,97 @@ import {
   seedDefaultMenu 
 } from '../lib/storage';
 
+// Separated Item Component for much better performance and smooth drag
+function DraggableItem({
+  item,
+  handleFieldChange,
+  saveChanges,
+  handleDelete,
+  isSaving
+}: {
+  item: MenuItem;
+  handleFieldChange: (id: string, field: keyof MenuItem, value: any) => void;
+  saveChanges: (item: MenuItem) => void;
+  handleDelete: (id: string) => void;
+  isSaving: boolean;
+}) {
+  const dragControls = useDragControls();
+
+  return (
+    <Reorder.Item
+      value={item}
+      id={item.id}
+      dragListener={false}
+      dragControls={dragControls}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-gold-600/10 shadow-xl flex items-center gap-4 hover:border-gold-500/30 transition-colors"
+    >
+      <div
+        className="cursor-grab active:cursor-grabbing text-neutral-600 hover:text-gold-500 p-2 -ml-2 transition-colors touch-none"
+        onPointerDown={(e) => dragControls.start(e)}
+      >
+        <GripVertical size={24} />
+      </div>
+
+      <div className="flex-1 flex flex-col gap-3">
+        <div className="flex justify-between items-start gap-4">
+          <input
+            className="bg-transparent border-b border-transparent focus:border-gold-500/50 outline-none text-lg font-bold text-gold-400 w-full transition-colors"
+            value={item.name}
+            onChange={(e) => handleFieldChange(item.id, 'name', e.target.value)}
+            onBlur={() => saveChanges(item)}
+          />
+          <div className="flex items-center gap-1 bg-neutral-900 rounded-lg px-2 py-1 border border-gold-600/20">
+            <input
+              type="number"
+              className="bg-transparent outline-none text-white font-bold w-14 text-right"
+              value={item.price}
+              onChange={(e) => handleFieldChange(item.id, 'price', Number(e.target.value))}
+              onBlur={() => saveChanges(item)}
+            />
+            <span className="text-white text-xs">₺</span>
+          </div>
+        </div>
+
+        <textarea
+          className="bg-transparent border-b border-transparent focus:border-neutral-800 outline-none text-neutral-400 text-sm w-full resize-none leading-relaxed"
+          rows={1}
+          placeholder="Açıklama ekle..."
+          value={item.description}
+          onChange={(e) => handleFieldChange(item.id, 'description', e.target.value)}
+          onBlur={() => saveChanges(item)}
+        />
+
+        <div className="flex justify-between items-center pt-3 border-t border-neutral-900/50">
+          <label className="flex items-center gap-2 cursor-pointer scale-75 origin-left">
+            <input
+              type="checkbox"
+              className="w-4 h-4 rounded border-neutral-800 text-gold-500 focus:ring-0 bg-transparent"
+              checked={item.isAvailable}
+              onChange={(e) => {
+                handleFieldChange(item.id, 'isAvailable', e.target.checked);
+                saveChanges({...item, isAvailable: e.target.checked});
+              }}
+            />
+            <span className="text-xs text-neutral-500 uppercase font-bold">Satışta</span>
+          </label>
+
+          <div className="flex items-center gap-3">
+            {isSaving && (
+              <span className="text-gold-500 text-[10px] font-bold animate-pulse">KAYDEDİLDİ</span>
+            )}
+            <button onClick={() => handleDelete(item.id)} className="text-neutral-600 hover:text-red-500 transition p-1">
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </Reorder.Item>
+  );
+}
+
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -21,6 +112,8 @@ export default function Admin() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isSaving, setIsSaving] = useState<string | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!hasFirebaseConfig) {
@@ -77,25 +170,37 @@ export default function Admin() {
       await updateMenuItem(id, data);
       setTimeout(() => setIsSaving(null), 1000);
     } catch (error) {
-      alert("Kaydedilemedi");
       setIsSaving(null);
     }
   };
 
-  const handleReorder = async (category: string, newOrder: MenuItem[]) => {
-    const updatedItems = [...menuItems];
-    const otherItems = updatedItems.filter(i => i.category !== category);
+  // Reorder ONLY updates local state for maximum fluid performance
+  // Actual database sync happens after a small delay (debounce)
+  const handleReorder = (category: string, newOrder: MenuItem[]) => {
+    const updatedAllItems = [...menuItems];
+    const otherItems = updatedAllItems.filter(i => i.category !== category);
+
+    // Assign new local orders
     const reorderedInCategory = newOrder.map((item, index) => ({
       ...item,
       order: index
     }));
 
-    setMenuItems([...otherItems, ...reorderedInCategory].sort((a, b) => a.order - b.order));
+    const finalItems = [...otherItems, ...reorderedInCategory].sort((a, b) => {
+       if (a.category === b.category) return a.order - b.order;
+       return 0; // Keep current category blocks
+    });
 
-    for (const item of reorderedInCategory) {
-      const { id, ...data } = item;
-      await updateMenuItem(id, data);
-    }
+    setMenuItems(finalItems);
+
+    // Debounced Firebase Sync
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(async () => {
+      for (const item of reorderedInCategory) {
+        const { id, ...data } = item;
+        await updateMenuItem(id, data);
+      }
+    }, 1500); // Wait 1.5s after last move to save to DB
   };
 
   const handleAddNew = async (category?: string) => {
@@ -158,7 +263,7 @@ export default function Admin() {
   const categoriesList = Array.from(new Set(menuItems.map(item => item.category)));
 
   return (
-    <div className="min-h-screen bg-[#111] text-[#E0E0E0] font-sans pb-40">
+    <div className="min-h-screen bg-[#111] text-[#E0E0E0] font-sans pb-40 overflow-x-hidden">
       <header className="fixed top-0 inset-x-0 bg-black/80 backdrop-blur-md border-b border-gold-600/30 z-50 py-3 px-4 flex justify-between items-center shadow-md">
         <div className="flex items-center gap-4">
           <Link to="/" className="text-gold-500 p-2 bg-neutral-900/50 rounded-full hover:bg-neutral-800 transition">
@@ -199,69 +304,14 @@ export default function Admin() {
                 className="space-y-4"
               >
                 {menuItems.filter(i => i.category === category).map((item) => (
-                  <Reorder.Item
+                  <DraggableItem
                     key={item.id}
-                    value={item}
-                    className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-gold-600/10 shadow-xl relative group hover:border-gold-500/30 transition-all flex items-center gap-4"
-                  >
-                    <div className="cursor-grab active:cursor-grabbing text-neutral-600 hover:text-gold-500 transition-colors">
-                      <GripVertical size={24} />
-                    </div>
-
-                    <div className="flex-1 flex flex-col gap-3">
-                      <div className="flex justify-between items-start gap-4">
-                        <input
-                          className="bg-transparent border-b border-transparent focus:border-gold-500/50 outline-none text-lg font-bold text-gold-400 w-full transition-colors"
-                          value={item.name}
-                          onChange={(e) => handleFieldChange(item.id, 'name', e.target.value)}
-                          onBlur={() => saveChanges(item)}
-                        />
-                        <div className="flex items-center gap-1 bg-neutral-900 rounded-lg px-2 py-1 border border-gold-600/20">
-                          <input
-                            type="number"
-                            className="bg-transparent outline-none text-white font-bold w-14 text-right"
-                            value={item.price}
-                            onChange={(e) => handleFieldChange(item.id, 'price', Number(e.target.value))}
-                            onBlur={() => saveChanges(item)}
-                          />
-                          <span className="text-white text-xs">₺</span>
-                        </div>
-                      </div>
-
-                      <textarea
-                        className="bg-transparent border-b border-transparent focus:border-neutral-800 outline-none text-neutral-400 text-sm w-full resize-none leading-relaxed"
-                        rows={1}
-                        placeholder="Açıklama ekle..."
-                        value={item.description}
-                        onChange={(e) => handleFieldChange(item.id, 'description', e.target.value)}
-                        onBlur={() => saveChanges(item)}
-                      />
-
-                      <div className="flex justify-between items-center pt-3 border-t border-neutral-900/50">
-                        <label className="flex items-center gap-2 cursor-pointer scale-75 origin-left">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-neutral-800 text-gold-500 focus:ring-0 bg-transparent"
-                            checked={item.isAvailable}
-                            onChange={(e) => {
-                              handleFieldChange(item.id, 'isAvailable', e.target.checked);
-                              saveChanges({...item, isAvailable: e.target.checked});
-                            }}
-                          />
-                          <span className="text-xs text-neutral-500 uppercase font-bold">Satışta</span>
-                        </label>
-
-                        <div className="flex items-center gap-3">
-                          {isSaving === item.id && (
-                            <span className="text-gold-500 text-[10px] font-bold animate-pulse">KAYDEDİLDİ</span>
-                          )}
-                          <button onClick={() => handleDelete(item.id)} className="text-neutral-600 hover:text-red-500 transition p-1">
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </Reorder.Item>
+                    item={item}
+                    handleFieldChange={handleFieldChange}
+                    saveChanges={saveChanges}
+                    handleDelete={handleDelete}
+                    isSaving={isSaving === item.id}
+                  />
                 ))}
               </Reorder.Group>
             )}
