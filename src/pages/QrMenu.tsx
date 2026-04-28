@@ -65,15 +65,14 @@ export default function QrMenu() {
   const itemsInCurrentCategory = menuItems.filter(item => item.category === currentCategory);
 
   const getCategoryBackground = (category: string) => {
-    switch(category.toLowerCase()) {
-      case 'et döner çeşitleri': return 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2000&auto=format&fit=crop';
-      case 'tavuk döner çeşitleri': return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
-      case 'kebap çeşitleri': return 'https://images.unsplash.com/photo-1663152778174-8b6eeae03578?q=80&w=2000&auto=format&fit=crop';
-      case 'sulu yemekler çeşitleri': return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
-      case 'soğuk mezeler': return 'https://images.unsplash.com/photo-1606756891040-3ee96cb17cdd?q=80&w=2000&auto=format&fit=crop';
-      case 'içecekler': return 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=2000&auto=format&fit=crop';
-      default: return 'https://images.unsplash.com/photo-1644408107567-2f3b9cd41eb4?q=80&w=2000&auto=format&fit=crop';
-    }
+    const cat = category.toLowerCase();
+    if (cat.includes('et döner')) return 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('tavuk döner')) return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('kebap')) return 'https://images.unsplash.com/photo-1663152778174-8b6eeae03578?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('sulu yemek')) return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('meze') || cat.includes('soğuk')) return 'https://images.unsplash.com/photo-1606756891040-3ee96cb17cdd?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('içecek')) return 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=2000&auto=format&fit=crop';
+    return 'https://images.unsplash.com/photo-1644408107567-2f3b9cd41eb4?q=80&w=2000&auto=format&fit=crop';
   };
 
   const bgImage = getCategoryBackground(currentCategory);
@@ -86,13 +85,13 @@ export default function QrMenu() {
           <motion.div
             key={bgImage}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.35 }}
+            animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
             className="absolute inset-0"
           >
-            <img src={bgImage} alt="" className="w-full h-full object-cover brightness-[0.4] contrast-125" />
-            <div className="absolute inset-0 bg-black/40" />
+            <img src={bgImage} alt="" className="w-full h-full object-cover brightness-[0.5] contrast-125" />
+            <div className="absolute inset-0 bg-black/30" />
           </motion.div>
         </AnimatePresence>
       </div>
