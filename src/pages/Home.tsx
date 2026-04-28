@@ -1,4 +1,4 @@
-import { MapPin, Phone, Clock, QrCode, Utensils, Award, Users, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, Clock, QrCode, Utensils, Award, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import logoUrl from '../assets/Umutdoner_Logo.png';
@@ -10,8 +10,8 @@ import bg4 from '../assets/arkaplan4.jpeg';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white font-sans">
-      {/* Navbar Placeholder */}
+    <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+      {/* Navbar */}
       <nav className="bg-black/90 shadow-sm sticky top-0 z-50 border-b border-gold-600/20 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -29,104 +29,88 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-24 flex flex-col md:flex-row items-center gap-12">
-        <div className="flex-1 space-y-6">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
-            Geleneksel Lezzetin <br />
-            <span className="text-gold-500">Altın Standardı</span>
-          </h1>
-          <p className="text-xl text-neutral-300 max-w-lg font-light">
-             Yılların tecrübesiyle, özenle seçilen etleri ustalıkla işliyor; geleneksel döner lezzetini en doğal haliyle sunuyoruz. Her lokmada kalite ve güveni hissedin.
-          </p>
-          <div className="flex gap-4 pt-6">
-            <Link to="/menu" className="bg-gold-500 text-black px-8 py-3.5 rounded-xl font-bold hover:bg-gold-400 transition-all shadow-lg shadow-gold-500/20 hover:shadow-gold-500/40 text-lg">
-              Menüyü İncele
-            </Link>
+      {/* Hero Section with Silik Background Images */}
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+        {/* Background Grid - Silik / Faded */}
+        <div className="absolute inset-0 z-0 grid grid-cols-2 grid-rows-2 gap-2 p-2 opacity-15">
+          <img src={bg1} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
+          <img src={bg2} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
+          <img src={bg3} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
+          <img src={bg4} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
+        </div>
+        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-black via-black/80 to-transparent"></div>
+
+        <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
+          <div className="flex-1 space-y-6">
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
+              Geleneksel Lezzetin <br />
+              <span className="text-gold-500">Altın Standardı</span>
+            </h1>
+            <p className="text-xl text-neutral-300 max-w-lg font-light leading-relaxed">
+               Yılların tecrübesiyle, özenle seçilen etleri ustalıkla işliyor; geleneksel döner lezzetini en doğal haliyle sunuyoruz. Her lokmada kalite ve güveni hissedin.
+            </p>
+            <div className="flex gap-4 pt-6">
+              <Link to="/menu" className="bg-gold-500 text-black px-8 py-3.5 rounded-xl font-bold hover:bg-gold-400 transition-all shadow-lg shadow-gold-500/20 hover:shadow-gold-500/40 text-lg">
+                Menüyü İncele
+              </Link>
+            </div>
+          </div>
+          <div className="flex-1 w-full bg-neutral-900/50 backdrop-blur-sm rounded-2xl aspect-[4/3] flex items-center justify-center border border-gold-600/30 overflow-hidden relative group shadow-2xl">
+             <video
+               src={videoUrl}
+               autoPlay
+               muted
+               playsInline
+               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+             />
           </div>
         </div>
-        <div className="flex-1 w-full bg-neutral-900 rounded-2xl aspect-[4/3] flex items-center justify-center border border-gold-600/30 overflow-hidden relative group">
-           <video 
-             src={videoUrl} 
-             autoPlay 
-             muted 
-             playsInline 
-             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-           />
-        </div>
-      </main>
+      </section>
 
-      {/* Hakkımızda Section with Background Images Grid */}
-      <section className="py-24 relative overflow-hidden" id="hakkimizda">
-        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 opacity-20 gap-1 p-2">
-          <img src={bg1} alt="" className="w-full h-full object-cover rounded-sm" />
-          <img src={bg2} alt="" className="w-full h-full object-cover rounded-sm" />
-          <img src={bg3} alt="" className="w-full h-full object-cover rounded-sm" />
-          <img src={bg4} alt="" className="w-full h-full object-cover rounded-sm" />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black z-10"></div>
-
-        <div className="max-w-6xl mx-auto px-4 relative z-20">
+      {/* Hakkımızda Section */}
+      <section className="py-24 bg-neutral-950 border-t border-gold-600/10" id="hakkimizda">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Hakkımızda</h2>
             <div className="h-1.5 w-24 bg-gold-500 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <div className="flex gap-6 items-start">
-                <div className="bg-gold-500/10 p-4 rounded-2xl border border-gold-500/20">
-                  <Utensils className="text-gold-500" size={32} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Geleneksel Ustalık</h3>
-                  <p className="text-neutral-400 leading-relaxed">
-                    Dönerimizi yıllardır değişmeyen özel reçetemizle, odun ateşinde ağır ağır pişiriyoruz. Lezzetimizin sırrı, etin seçiminden terbiyesine kadar her aşamadaki titizliğimizdir.
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="bg-neutral-900/50 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+              <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <Utensils className="text-gold-500" size={32} />
               </div>
-
-              <div className="flex gap-6 items-start">
-                <div className="bg-gold-500/10 p-4 rounded-2xl border border-gold-500/20">
-                  <Award className="text-gold-500" size={32} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Kalite Standardı</h3>
-                  <p className="text-neutral-400 leading-relaxed">
-                    En taze malzemeleri, en hijyenik koşullarda işliyoruz. Sofranıza gelen her tabak, bizim kalite sözümüzü taşımaktadır.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-6 items-start">
-                <div className="bg-gold-500/10 p-4 rounded-2xl border border-gold-500/20">
-                  <ShieldCheck className="text-gold-500" size={32} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Güvenilir Lezzet</h3>
-                  <p className="text-neutral-400 leading-relaxed">
-                    Müşteri memnuniyetini ve gıda güvenliğini her şeyin önünde tutuyoruz. Ailenizle birlikte güvenle tüketebileceğiniz sağlıklı lezzetler sunuyoruz.
-                  </p>
-                </div>
-              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Geleneksel Ustalık</h3>
+              <p className="text-neutral-400 leading-relaxed text-sm">
+                Dönerimizi yıllardır değişmeyen özel reçetemizle, odun ateşinde ağır ağır pişiriyoruz. Lezzetimizin sırrı, etin seçiminden terbiyesine kadar her aşamadaki titizliğimizdir.
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <img src={bg1} alt="Mekan" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
-                <img src={bg3} alt="Lezzet" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
+            <div className="bg-neutral-900/50 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+              <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <Award className="text-gold-500" size={32} />
               </div>
-              <div className="space-y-4 pt-8">
-                <img src={bg2} alt="Döner" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
-                <img src={bg4} alt="Sunum" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
+              <h3 className="text-2xl font-bold text-white mb-4">Kalite Standardı</h3>
+              <p className="text-neutral-400 leading-relaxed text-sm">
+                En taze malzemeleri, en hijyenik koşullarda işliyoruz. Sofranıza gelen her tabak, bizim kalite sözümüzü taşımaktadır.
+              </p>
+            </div>
+
+            <div className="bg-neutral-900/50 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+              <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="text-gold-500" size={32} />
               </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Güvenilir Lezzet</h3>
+              <p className="text-neutral-400 leading-relaxed text-sm">
+                Müşteri memnuniyetini ve gıda güvenliğini her şeyin önünde tutuyoruz. Ailenizle birlikte güvenle tüketebileceğiniz sağlıklı lezzetler sunuyoruz.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Quick Info */}
-      <section className="bg-neutral-950 border-t border-b border-gold-600/20 py-16" id="iletisim">
+      <section className="bg-black border-t border-b border-gold-600/20 py-16" id="iletisim">
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-gold-600/20">
           <div className="flex flex-col items-center gap-4 p-6 hover:bg-neutral-900/50 transition-colors rounded-xl md:rounded-none">
             <div className="bg-umutred-600/20 p-4 rounded-full">
@@ -140,8 +124,8 @@ export default function Home() {
               <MapPin className="text-gold-500" size={32} />
             </div>
             <h3 className="font-bold text-2xl text-white group-hover:text-gold-400 transition-colors">Konum</h3>
-            <p className="text-neutral-400 text-base">Profesör Dr. Necmettin Erbakan caddesi<br/>Engin sokak no 3/A<br/>Ataşehir / İstanbul</p>
-            <div className="mt-2 bg-neutral-800 text-gold-400 px-4 py-2 rounded-lg font-medium group-hover:bg-gold-500 group-hover:text-black transition-all text-sm border border-gold-600/30">
+            <p className="text-neutral-400 text-base text-sm">Profesör Dr. Necmettin Erbakan caddesi<br/>Engin sokak no 3/A<br/>Ataşehir / İstanbul</p>
+            <div className="mt-2 bg-neutral-800 text-gold-400 px-4 py-2 rounded-lg font-medium group-hover:bg-gold-500 group-hover:text-black transition-all text-xs border border-gold-600/30">
               Yol Tarifi Al
             </div>
           </a>
