@@ -93,7 +93,8 @@ export default function QrMenu() {
     if (cat.includes('icecek') || cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran') || cat.includes('su'))
       return drinksBg;
 
-    return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
+
+    return 'https://i.pinimg.com/1200x/22/c6/24/22c6245ca9e09b627eb1cc1edc54c853.jpg';
   };
 
   const bgImage = getCategoryBackground(currentCategory);
