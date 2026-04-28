@@ -130,12 +130,16 @@ export default function Home() {
               Yol Tarifi Al
             </div>
           </a>
-          <div className="flex flex-col items-center gap-4 p-6 hover:bg-neutral-900/50 transition-colors rounded-xl md:rounded-none">
-            <div className="bg-umutred-600/20 p-4 rounded-full">
+          <div className="flex flex-col items-center gap-4 p-6 hover:bg-neutral-900/50 transition-colors rounded-xl md:rounded-none group">
+            <div className="bg-umutred-600/20 p-4 rounded-full group-hover:scale-110 transition-transform">
               <Phone className="text-gold-500" size={32} />
             </div>
-            <h3 className="font-bold text-2xl text-white">İletişim</h3>
-            <p className="text-neutral-400 text-lg">0216 575 8407<br/>Sipariş Hattı</p>
+            <h3 className="font-bold text-2xl text-white group-hover:text-gold-400 transition-colors">İletişim</h3>
+            <a href="tel:02165758407" className="text-neutral-400 text-lg hover:text-white transition-colors font-medium">0216 575 8407</a>
+            <p className="text-neutral-500 text-sm">Sipariş Hattı</p>
+            <a href="tel:02165758407" className="mt-2 bg-neutral-800 text-gold-400 px-4 py-2 rounded-lg font-medium group-hover:bg-gold-500 group-hover:text-black transition-all text-xs border border-gold-600/30">
+              Telefon Et
+            </a>
           </div>
         </div>
       </section>
