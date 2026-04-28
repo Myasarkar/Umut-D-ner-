@@ -54,9 +54,8 @@ export default function Home() {
               }`}
             />
           ))}
-          {/* Overlay to ensure text readability */}
-          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-black via-black/70 to-black/30"></div>
-          <div className="absolute inset-0 z-[1] bg-black/20"></div>
+          {/* Overlay to ensure text readability - Uniform dark layer */}
+          <div className="absolute inset-0 z-[1] bg-black/50"></div>
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
