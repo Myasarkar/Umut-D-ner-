@@ -74,7 +74,7 @@ export default function QrMenu() {
     if (cat.includes('tavuk d')) return 'https://i.pinimg.com/736x/95/30/31/953031a5a9a4f5a98b695ae4fc21e173.jpg';
 
     // Kebap
-    if (cat.includes('kebap')) return 'https://images.unsplash.com/photo-1544124499-58912cbddaad?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('kebap')) return 'https://i.pinimg.com/1200x/02/61/4f/02614f78d76f6415cb97d691c90dd1ee.jpg';
 
     // Sulu Yemek
     if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2000&auto=format&fit=crop';
