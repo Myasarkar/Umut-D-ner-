@@ -1,8 +1,12 @@
-import { MapPin, Phone, Clock, QrCode } from 'lucide-react';
+import { MapPin, Phone, Clock, QrCode, Utensils, Award, Users, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import logoUrl from '../assets/Umutdoner_Logo.png';
 import videoUrl from '../assets/umutdoner_video.mp4';
+import bg1 from '../assets/arkaplan1.jpeg';
+import bg2 from '../assets/arkaplan2.jpeg';
+import bg3 from '../assets/arkaplan3.jpeg';
+import bg4 from '../assets/arkaplan4.jpeg';
 
 export default function Home() {
   return (
@@ -47,10 +51,80 @@ export default function Home() {
              autoPlay 
              muted 
              playsInline 
-             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+             loop
+             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
            />
         </div>
       </main>
+
+      {/* Hakkımızda Section with Background Images Grid */}
+      <section className="py-24 relative overflow-hidden" id="hakkimizda">
+        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 opacity-20 gap-1 p-2">
+          <img src={bg1} alt="" className="w-full h-full object-cover rounded-sm" />
+          <img src={bg2} alt="" className="w-full h-full object-cover rounded-sm" />
+          <img src={bg3} alt="" className="w-full h-full object-cover rounded-sm" />
+          <img src={bg4} alt="" className="w-full h-full object-cover rounded-sm" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black z-10"></div>
+
+        <div className="max-w-6xl mx-auto px-4 relative z-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Hakkımızda</h2>
+            <div className="h-1.5 w-24 bg-gold-500 mx-auto rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="flex gap-6 items-start">
+                <div className="bg-gold-500/10 p-4 rounded-2xl border border-gold-500/20">
+                  <Utensils className="text-gold-500" size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Geleneksel Ustalık</h3>
+                  <p className="text-neutral-400 leading-relaxed">
+                    Dönerimizi yıllardır değişmeyen özel reçetemizle, odun ateşinde ağır ağır pişiriyoruz. Lezzetimizin sırrı, etin seçiminden terbiyesine kadar her aşamadaki titizliğimizdir.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-6 items-start">
+                <div className="bg-gold-500/10 p-4 rounded-2xl border border-gold-500/20">
+                  <Award className="text-gold-500" size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Kalite Standardı</h3>
+                  <p className="text-neutral-400 leading-relaxed">
+                    En taze malzemeleri, en hijyenik koşullarda işliyoruz. Sofranıza gelen her tabak, bizim kalite sözümüzü taşımaktadır.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-6 items-start">
+                <div className="bg-gold-500/10 p-4 rounded-2xl border border-gold-500/20">
+                  <ShieldCheck className="text-gold-500" size={32} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Güvenilir Lezzet</h3>
+                  <p className="text-neutral-400 leading-relaxed">
+                    Müşteri memnuniyetini ve gıda güvenliğini her şeyin önünde tutuyoruz. Ailenizle birlikte güvenle tüketebileceğiniz sağlıklı lezzetler sunuyoruz.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <img src={bg1} alt="Mekan" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
+                <img src={bg3} alt="Lezzet" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
+              </div>
+              <div className="space-y-4 pt-8">
+                <img src={bg2} alt="Döner" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
+                <img src={bg4} alt="Sunum" className="rounded-2xl border border-gold-600/30 shadow-2xl hover:scale-[1.02] transition-transform duration-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Quick Info */}
       <section className="bg-neutral-950 border-t border-b border-gold-600/20 py-16" id="iletisim">
