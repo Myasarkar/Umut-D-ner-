@@ -28,8 +28,8 @@ export default function Home() {
 
       {/* Hero Section with Fixed Background */}
       <section className="relative min-h-[85vh] flex flex-col md:flex-row items-center overflow-hidden">
-        {/* Background Image - Fixed & Night Themed */}
-        <div className="absolute inset-0 z-0">
+        {/* Background Image - Restricted to top part on mobile */}
+        <div className="absolute top-0 inset-x-0 h-[500px] md:h-full z-0">
           <img
             src={bg1}
             alt=""
@@ -37,8 +37,8 @@ export default function Home() {
           />
           {/* Overlay to ensure text readability */}
           <div className="absolute inset-0 z-[1] bg-black/40"></div>
-          {/* Bottom fade out - Adjusted for mobile boundary */}
-          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent z-[2] md:h-32"></div>
+          {/* Aggressive fade out on mobile to end at button level */}
+          <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black via-black to-transparent z-[2] md:h-32"></div>
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
@@ -56,8 +56,9 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          {/* Mobile Spacer to push video out of background zone */}
-          <div className="md:hidden h-12"></div>
+
+          {/* Mobile Spacer - Adjusted to ensure video stays in pure black zone */}
+          <div className="md:hidden h-20"></div>
 
           <div className="flex-1 w-full bg-neutral-900/40 backdrop-blur-md rounded-2xl aspect-[4/3] flex items-center justify-center border border-white/20 overflow-hidden relative group shadow-2xl">
              <video
