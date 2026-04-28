@@ -15,13 +15,8 @@ export default function QrMenu() {
     async function loadMenu() {
       try {
         const items = await getMenuItems();
-
-        // Filter only available items
         const availableItems = items.filter(item => item.isAvailable);
-
-        // Get unique categories
         const cats = Array.from(new Set(availableItems.map(item => item.category)));
-
         setMenuItems(availableItems);
         setCategories(cats);
       } catch (error) {
@@ -30,7 +25,6 @@ export default function QrMenu() {
         setLoading(false);
       }
     }
-    
     loadMenu();
   }, []);
 
@@ -85,20 +79,20 @@ export default function QrMenu() {
   const bgImage = getCategoryBackground(currentCategory);
 
   return (
-    <div className="min-h-screen bg-[#111] text-[#E0E0E0] overflow-hidden flex flex-col font-sans relative">
-      {/* Dynamic Background */}
-      <div className="absolute inset-0 z-0">
+    <div className="min-h-screen bg-black text-[#E0E0E0] overflow-hidden flex flex-col font-sans relative">
+      {/* Full Page Dynamic Background - Fixed for whole view */}
+      <div className="fixed inset-0 z-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={bgImage}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.2 }}
+            animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
             className="absolute inset-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-[#111]" />
-            <img src={bgImage} alt="" className="w-full h-[50vh] object-cover opacity-60 mix-blend-overlay" />
+            <img src={bgImage} alt="" className="w-full h-full object-cover brightness-[0.4] contrast-125" />
+            <div className="absolute inset-0 bg-black/40" />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -112,19 +106,19 @@ export default function QrMenu() {
           <div className="text-center">
             <img src={logoUrl} alt="Umut Döner" className="h-14 mx-auto object-contain" />
           </div>
-          <div className="w-10"></div> {/* Spacer for centering */}
+          <div className="w-10"></div>
         </div>
 
         {/* Category Navigation Bar */}
-        <div className="flex overflow-x-auto no-scrollbar py-2 px-4 gap-4 border-t border-gold-600/10 bg-black/40">
+        <div className="flex overflow-x-auto no-scrollbar py-2 px-4 gap-4 border-t border-gold-600/10 bg-black/60">
           {categories.map((cat, idx) => (
             <button
               key={cat}
               onClick={() => setCurrentCategoryIndex(idx)}
               className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition-all uppercase tracking-wider ${
                 idx === currentCategoryIndex
-                ? 'bg-gold-500 text-black shadow-lg shadow-gold-500/20'
-                : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
+                ? 'bg-gold-500 text-black shadow-lg'
+                : 'bg-black/40 text-neutral-400 border border-neutral-800'
               }`}
             >
               {cat}
@@ -133,8 +127,8 @@ export default function QrMenu() {
         </div>
       </header>
 
-      {/* Book Container */}
-      <main className="flex-1 mt-36 pt-6 pb-24 px-4 max-w-lg mx-auto w-full flex flex-col h-full relative z-10">
+      {/* Content Container */}
+      <main className="flex-1 mt-36 pt-6 pb-24 px-4 max-w-lg mx-auto w-full flex flex-col relative z-10">
         <div className="flex justify-between items-center mb-6 px-4">
           <button 
              onClick={prevCategory} 
@@ -145,8 +139,8 @@ export default function QrMenu() {
           </button>
           
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white uppercase tracking-widest">{currentCategory}</h2>
-            <div className="h-0.5 w-12 bg-umutred-600 mx-auto mt-2"></div>
+            <h2 className="text-2xl font-bold text-white uppercase tracking-widest drop-shadow-lg">{currentCategory}</h2>
+            <div className="h-0.5 w-12 bg-umutred-600 mx-auto mt-2 shadow-lg"></div>
           </div>
           
           <button 
@@ -166,21 +160,21 @@ export default function QrMenu() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3 }}
-              className="space-y-4 bg-black/60 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-gold-600/20 min-h-[400px] shadow-2xl shadow-black"
+              className="space-y-4 bg-black/50 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-gold-600/20 min-h-[400px] shadow-2xl"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                  <img src={logoUrl} alt="" className="w-32 h-32 object-contain grayscale" />
               </div>
               {itemsInCurrentCategory.map(item => (
                 <div key={item.id} className="flex flex-col gap-1 border-b border-dashed border-neutral-700/50 pb-3 last:border-0 last:pb-0 relative z-10">
                   <div className="flex justify-between items-start gap-4">
-                    <h3 className="font-bold text-lg text-gold-400 leading-tight tracking-wide">{item.name}</h3>
-                    <div className="font-bold text-lg text-white whitespace-nowrap bg-neutral-900/80 px-2 py-0.5 border border-gold-600/30 rounded-lg">
+                    <h3 className="font-bold text-lg text-gold-400 leading-tight tracking-wide drop-shadow-md">{item.name}</h3>
+                    <div className="font-bold text-lg text-white whitespace-nowrap bg-neutral-900/60 px-2 py-0.5 border border-gold-600/30 rounded-lg shadow-md">
                       {item.price} ₺
                     </div>
                   </div>
                   {item.description && (
-                    <p className="text-neutral-400 text-sm leading-relaxed">{item.description}</p>
+                    <p className="text-neutral-300 text-sm leading-relaxed drop-shadow-md">{item.description}</p>
                   )}
                 </div>
               ))}
