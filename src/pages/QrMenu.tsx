@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoUrl from '../assets/Umutdoner_Logo.png';
+import drinksBg from '../assets/soğuk içecek.jpg';
 import { getMenuItems, MenuItem } from '../lib/storage';
 
 export default function QrMenu() {
@@ -90,7 +91,7 @@ export default function QrMenu() {
 
     // İçecekler (Turkish character robust matching)
     if (cat.includes('icecek') || cat.includes('içecek') || cat.includes('kola') || cat.includes('ayran') || cat.includes('su'))
-      return 'https://i.pinimg.com/originals/07/14/38/071438c061390e83b8b0443f2b8358d9.jpg';
+      return drinksBg;
 
     return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2000&auto=format&fit=crop';
   };
