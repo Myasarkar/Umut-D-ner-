@@ -67,7 +67,7 @@ export default function QrMenu() {
   const getCategoryBackground = (category: string) => {
     const cat = category.toLowerCase().trim();
     // Improved matching logic with direct and broad matches
-    if (cat.includes('et d')) return 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2000&auto=format&fit=crop';
+    if (cat.includes('et d')) return 'https://images.unsplash.com/photo-1633321702518-7feccaf0e8a1?q=80&w=2000&auto=format&fit=crop';
     if (cat.includes('tavuk d')) return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
     if (cat.includes('kebap')) return 'https://images.unsplash.com/photo-1663152778174-8b6eeae03578?q=80&w=2000&auto=format&fit=crop';
     if (cat.includes('sulu') || cat.includes('yemek')) return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
