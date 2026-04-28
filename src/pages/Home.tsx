@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { MapPin, Phone, Clock, QrCode, Utensils, Award, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -9,6 +10,16 @@ import bg3 from '../assets/arkaplan3.jpeg';
 import bg4 from '../assets/arkaplan4.jpeg';
 
 export default function Home() {
+  const [currentBg, setCurrentBg] = useState(0);
+  const backgrounds = [bg1, bg2, bg3, bg4];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
       {/* Navbar */}
@@ -29,33 +40,41 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section with Silik Background Images */}
-      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-        {/* Background Grid - Silik / Faded */}
-        <div className="absolute inset-0 z-0 grid grid-cols-2 grid-rows-2 gap-2 p-2 opacity-15">
-          <img src={bg1} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
-          <img src={bg2} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
-          <img src={bg3} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
-          <img src={bg4} alt="" className="w-full h-full object-cover rounded-lg grayscale hover:grayscale-0 transition-all duration-1000" />
+      {/* Hero Section with Animated Background */}
+      <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+        {/* Animated Background Image */}
+        <div className="absolute inset-0 z-0">
+          {backgrounds.map((bg, idx) => (
+            <img
+              key={idx}
+              src={bg}
+              alt=""
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                idx === currentBg ? 'opacity-40' : 'opacity-0'
+              }`}
+            />
+          ))}
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-black via-black/70 to-black/30"></div>
+          <div className="absolute inset-0 z-[1] bg-black/20"></div>
         </div>
-        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-black via-black/80 to-transparent"></div>
 
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
           <div className="flex-1 space-y-6">
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight drop-shadow-lg">
               Geleneksel Lezzetin <br />
               <span className="text-gold-500">Altın Standardı</span>
             </h1>
-            <p className="text-xl text-neutral-300 max-w-lg font-light leading-relaxed">
+            <p className="text-xl text-neutral-100 max-w-lg font-medium leading-relaxed drop-shadow-md">
                Yılların tecrübesiyle, özenle seçilen etleri ustalıkla işliyor; geleneksel döner lezzetini en doğal haliyle sunuyoruz. Her lokmada kalite ve güveni hissedin.
             </p>
             <div className="flex gap-4 pt-6">
-              <Link to="/menu" className="bg-gold-500 text-black px-8 py-3.5 rounded-xl font-bold hover:bg-gold-400 transition-all shadow-lg shadow-gold-500/20 hover:shadow-gold-500/40 text-lg">
+              <Link to="/menu" className="bg-gold-500 text-black px-8 py-3.5 rounded-xl font-bold hover:bg-gold-400 transition-all shadow-xl shadow-gold-500/20 hover:shadow-gold-500/40 text-lg">
                 Menüyü İncele
               </Link>
             </div>
           </div>
-          <div className="flex-1 w-full bg-neutral-900/50 backdrop-blur-sm rounded-2xl aspect-[4/3] flex items-center justify-center border border-gold-600/30 overflow-hidden relative group shadow-2xl">
+          <div className="flex-1 w-full bg-neutral-900/40 backdrop-blur-md rounded-2xl aspect-[4/3] flex items-center justify-center border border-white/10 overflow-hidden relative group shadow-2xl">
              <video
                src={videoUrl}
                autoPlay
