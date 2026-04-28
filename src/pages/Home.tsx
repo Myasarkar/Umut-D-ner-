@@ -42,7 +42,7 @@ export default function Home() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
-          <div className="flex-1 space-y-10">
+          <div className="flex-1 space-y-20">
             <h1 className="text-[37px] md:text-7xl font-extrabold tracking-tight text-white leading-tight drop-shadow-2xl relative -top-[5px] md:top-0">
               Geleneksel Lezzetin <br />
               <span className="text-gold-500">Altın Standardı</span>
