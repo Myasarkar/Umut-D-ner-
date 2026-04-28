@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { LogOut, Plus, Trash2, Save, Utensils, Home, Check, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
+import { LogOut, Plus, Trash2, Utensils, Home, Check, RotateCcw, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Reorder } from 'framer-motion';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { auth, googleProvider, hasFirebaseConfig } from '../lib/firebase';
 import logoUrl from '../assets/Umutdoner_Logo.png';
@@ -52,7 +53,6 @@ export default function Admin() {
       const items = await getMenuItems();
       setMenuItems(items);
 
-      // Initialize all categories as expanded
       const cats = Array.from(new Set(items.map(i => i.category)));
       const expanded: Record<string, boolean> = {};
       cats.forEach(c => expanded[c] = true);
@@ -82,14 +82,35 @@ export default function Admin() {
     }
   };
 
+  const handleReorder = async (category: string, newOrder: MenuItem[]) => {
+    // Update local state first for smooth UI
+    const updatedItems = [...menuItems];
+    const otherItems = updatedItems.filter(i => i.category !== category);
+
+    // Assign new order numbers based on index
+    const reorderedInCategory = newOrder.map((item, index) => ({
+      ...item,
+      order: index
+    }));
+
+    setMenuItems([...otherItems, ...reorderedInCategory].sort((a, b) => a.order - b.order));
+
+    // Update Firebase for each item that changed
+    for (const item of reorderedInCategory) {
+      const { id, ...data } = item;
+      await updateMenuItem(id, data);
+    }
+  };
+
   const handleAddNew = async (category?: string) => {
+    const itemsInCategory = menuItems.filter(i => i.category === (category || 'Dönerler'));
     const newItem = {
       name: 'Yeni Ürün',
       description: 'Açıklama yazın...',
       price: 0,
       category: category || menuItems[0]?.category || 'Dönerler',
       isAvailable: true,
-      order: menuItems.length + 1
+      order: itemsInCategory.length
     };
     try {
       await addMenuItem(newItem);
@@ -138,7 +159,6 @@ export default function Admin() {
     );
   }
 
-  // Group items by category
   const categories = Array.from(new Set(menuItems.map(item => item.category)));
 
   return (
@@ -159,7 +179,6 @@ export default function Admin() {
       <main className="max-w-3xl mx-auto mt-24 px-4">
         {categories.map((category) => (
           <div key={category} className="mb-10">
-            {/* Category Header */}
             <div
               className="flex justify-between items-center bg-neutral-900/80 p-4 rounded-xl border border-gold-600/30 mb-4 sticky top-20 z-30 backdrop-blur-sm cursor-pointer"
               onClick={() => toggleCategory(category)}
@@ -171,18 +190,30 @@ export default function Admin() {
               <button
                 onClick={(e) => { e.stopPropagation(); handleAddNew(category); }}
                 className="text-gold-500 hover:bg-gold-500/10 p-2 rounded-lg transition"
-                title="Bu kategoriye yeni ürün ekle"
               >
                 <Plus size={20} />
               </button>
             </div>
 
-            {/* Items in Category */}
             {expandedCategories[category] && (
-              <div className="space-y-4">
+              <Reorder.Group
+                axis="y"
+                values={menuItems.filter(i => i.category === category)}
+                onReorder={(newOrder) => handleReorder(category, newOrder)}
+                className="space-y-4"
+              >
                 {menuItems.filter(i => i.category === category).map((item) => (
-                  <div key={item.id} className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-gold-600/10 shadow-xl relative group hover:border-gold-500/30 transition-all">
-                    <div className="flex flex-col gap-3">
+                  <Reorder.Item
+                    key={item.id}
+                    value={item}
+                    className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-gold-600/10 shadow-xl relative group hover:border-gold-500/30 transition-all flex items-center gap-4"
+                  >
+                    {/* Hamburger Drag Handle */}
+                    <div className="cursor-grab active:cursor-grabbing text-neutral-600 hover:text-gold-500 transition-colors">
+                      <GripVertical size={24} />
+                    </div>
+
+                    <div className="flex-1 flex flex-col gap-3">
                       <div className="flex justify-between items-start gap-4">
                         <input
                           className="bg-transparent border-b border-transparent focus:border-gold-500/50 outline-none text-lg font-bold text-gold-400 w-full transition-colors"
@@ -212,30 +243,18 @@ export default function Admin() {
                       />
 
                       <div className="flex justify-between items-center pt-3 border-t border-neutral-900/50">
-                        <div className="flex items-center gap-4">
-                           <div className="flex items-center gap-1 text-[10px] text-neutral-500">
-                             <span>SIRA:</span>
-                             <input
-                               type="number"
-                               className="bg-neutral-900 w-8 text-center border-none focus:ring-0 p-0 text-gold-500 font-bold"
-                               value={item.order}
-                               onChange={(e) => handleFieldChange(item.id, 'order', Number(e.target.value))}
-                               onBlur={() => saveChanges(item)}
-                             />
-                           </div>
-                           <label className="flex items-center gap-2 cursor-pointer scale-75 origin-left">
-                            <input
-                              type="checkbox"
-                              className="w-4 h-4 rounded border-neutral-800 text-gold-500 focus:ring-0 bg-transparent"
-                              checked={item.isAvailable}
-                              onChange={(e) => {
-                                handleFieldChange(item.id, 'isAvailable', e.target.checked);
-                                saveChanges({...item, isAvailable: e.target.checked});
-                              }}
-                            />
-                            <span className="text-xs text-neutral-500 uppercase font-bold">Satışta</span>
-                          </label>
-                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer scale-75 origin-left">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-neutral-800 text-gold-500 focus:ring-0 bg-transparent"
+                            checked={item.isAvailable}
+                            onChange={(e) => {
+                              handleFieldChange(item.id, 'isAvailable', e.target.checked);
+                              saveChanges({...item, isAvailable: e.target.checked});
+                            }}
+                          />
+                          <span className="text-xs text-neutral-500 uppercase font-bold">Satışta</span>
+                        </label>
 
                         <div className="flex items-center gap-3">
                           {isSaving === item.id && (
@@ -247,12 +266,36 @@ export default function Admin() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Reorder.Item>
                 ))}
-              </div>
+              </Reorder.Group>
             )}
           </div>
         ))}
+
+        {menuItems.length === 0 && (
+          <div className="text-center py-20 bg-neutral-900/30 rounded-3xl border border-dashed border-neutral-800 mt-10">
+            <p className="text-neutral-500 mb-6 font-medium">Menüde ürün bulunmuyor.</p>
+            <button onClick={() => seedDefaultMenu().then(loadMenu)} className="bg-gold-500 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 mx-auto">
+              <RotateCcw size={20} /> VARSAYILAN MENÜYÜ YÜKLE
+            </button>
+          </div>
+        )}
+
+        <button
+          onClick={() => handleAddNew()}
+          className="fixed bottom-10 right-10 bg-gold-500 text-black w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform active:scale-95 z-50 border-4 border-black"
+        >
+          <Plus size={32} />
+        </button>
+      </main>
+
+      <div className="fixed bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black to-transparent pointer-events-none">
+         <p className="text-center text-[10px] text-neutral-600 pointer-events-auto">Sürükleyerek sıralayabilirsiniz. Değişiklikler otomatik kaydedilir.</p>
+      </div>
+    </div>
+  );
+}
 
         {/* Empty State */}
         {menuItems.length === 0 && (
