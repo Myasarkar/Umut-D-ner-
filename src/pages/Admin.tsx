@@ -83,11 +83,8 @@ export default function Admin() {
   };
 
   const handleReorder = async (category: string, newOrder: MenuItem[]) => {
-    // Update local state first for smooth UI
     const updatedItems = [...menuItems];
     const otherItems = updatedItems.filter(i => i.category !== category);
-
-    // Assign new order numbers based on index
     const reorderedInCategory = newOrder.map((item, index) => ({
       ...item,
       order: index
@@ -95,7 +92,6 @@ export default function Admin() {
 
     setMenuItems([...otherItems, ...reorderedInCategory].sort((a, b) => a.order - b.order));
 
-    // Update Firebase for each item that changed
     for (const item of reorderedInCategory) {
       const { id, ...data } = item;
       await updateMenuItem(id, data);
@@ -139,12 +135,12 @@ export default function Admin() {
   };
 
   if (isLoading && !user) {
-    return <div className="min-h-screen bg-black flex items-center justify-center text-gold-500">Yükleniyor...</div>;
+    return <div className="min-h-screen bg-black flex items-center justify-center text-gold-500 font-sans">Yükleniyor...</div>;
   }
 
   if (!user || !isAuthorized) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 text-center">
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 text-center font-sans">
         <img src={logoUrl} alt="Logo" className="h-16 mb-8" />
         <h1 className="text-2xl font-bold text-white mb-6">Yönetim Paneli</h1>
         {!user ? (
@@ -159,7 +155,7 @@ export default function Admin() {
     );
   }
 
-  const categories = Array.from(new Set(menuItems.map(item => item.category)));
+  const categoriesList = Array.from(new Set(menuItems.map(item => item.category)));
 
   return (
     <div className="min-h-screen bg-[#111] text-[#E0E0E0] font-sans pb-40">
@@ -177,7 +173,7 @@ export default function Admin() {
       </header>
 
       <main className="max-w-3xl mx-auto mt-24 px-4">
-        {categories.map((category) => (
+        {categoriesList.map((category) => (
           <div key={category} className="mb-10">
             <div
               className="flex justify-between items-center bg-neutral-900/80 p-4 rounded-xl border border-gold-600/30 mb-4 sticky top-20 z-30 backdrop-blur-sm cursor-pointer"
@@ -208,7 +204,6 @@ export default function Admin() {
                     value={item}
                     className="bg-black/40 backdrop-blur-md p-5 rounded-2xl border border-gold-600/10 shadow-xl relative group hover:border-gold-500/30 transition-all flex items-center gap-4"
                   >
-                    {/* Hamburger Drag Handle */}
                     <div className="cursor-grab active:cursor-grabbing text-neutral-600 hover:text-gold-500 transition-colors">
                       <GripVertical size={24} />
                     </div>
@@ -226,7 +221,7 @@ export default function Admin() {
                             type="number"
                             className="bg-transparent outline-none text-white font-bold w-14 text-right"
                             value={item.price}
-                            onChange={(e) => handleFieldChange(item.id, 'price', e.target.value)}
+                            onChange={(e) => handleFieldChange(item.id, 'price', Number(e.target.value))}
                             onBlur={() => saveChanges(item)}
                           />
                           <span className="text-white text-xs">₺</span>
@@ -273,7 +268,7 @@ export default function Admin() {
           </div>
         ))}
 
-        {menuItems.length === 0 && (
+        {menuItems.length === 0 && !isLoading && (
           <div className="text-center py-20 bg-neutral-900/30 rounded-3xl border border-dashed border-neutral-800 mt-10">
             <p className="text-neutral-500 mb-6 font-medium">Menüde ürün bulunmuyor.</p>
             <button onClick={() => seedDefaultMenu().then(loadMenu)} className="bg-gold-500 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 mx-auto">
@@ -292,33 +287,6 @@ export default function Admin() {
 
       <div className="fixed bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black to-transparent pointer-events-none">
          <p className="text-center text-[10px] text-neutral-600 pointer-events-auto">Sürükleyerek sıralayabilirsiniz. Değişiklikler otomatik kaydedilir.</p>
-      </div>
-    </div>
-  );
-}
-
-        {/* Empty State */}
-        {menuItems.length === 0 && (
-          <div className="text-center py-20 bg-neutral-900/30 rounded-3xl border border-dashed border-neutral-800 mt-10">
-            <p className="text-neutral-500 mb-6 font-medium">Menüde ürün bulunmuyor.</p>
-            <button onClick={() => seedDefaultMenu().then(loadMenu)} className="bg-gold-500 text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 mx-auto">
-              <RotateCcw size={20} /> VARSAYILAN MENÜYÜ YÜKLE
-            </button>
-          </div>
-        )}
-
-        {/* Global Add Button */}
-        <button
-          onClick={() => handleAddNew()}
-          className="fixed bottom-10 right-10 bg-gold-500 text-black w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform active:scale-95 z-50 border-4 border-black"
-          title="Yeni Ürün Ekle"
-        >
-          <Plus size={32} />
-        </button>
-      </main>
-
-      <div className="fixed bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black to-transparent pointer-events-none">
-         <p className="text-center text-[10px] text-neutral-600 pointer-events-auto">Tüm değişiklikler otomatik kaydedilir.</p>
       </div>
     </div>
   );
