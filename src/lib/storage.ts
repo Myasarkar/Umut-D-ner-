@@ -7,10 +7,9 @@ import {
   doc,
   query,
   orderBy,
-  setDoc,
   writeBatch
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { db, hasFirebaseConfig } from './firebase';
 import { DEFAULT_MENU } from './defaultMenu';
 
 export interface MenuItem {
@@ -27,6 +26,11 @@ export interface MenuItem {
 const COLLECTION_NAME = 'menu_items';
 
 export async function getMenuItems(): Promise<MenuItem[]> {
+  if (!hasFirebaseConfig) {
+    console.warn("Firebase not configured, using default menu.");
+    return DEFAULT_MENU;
+  }
+
   try {
     const q = query(collection(db, COLLECTION_NAME), orderBy('order', 'asc'));
     const querySnapshot = await getDocs(q);
@@ -48,6 +52,7 @@ export async function getMenuItems(): Promise<MenuItem[]> {
 }
 
 export async function addMenuItem(item: Omit<MenuItem, 'id'>) {
+  if (!hasFirebaseConfig) throw new Error("Firebase not configured");
   try {
     const docRef = await addDoc(collection(db, COLLECTION_NAME), item);
     return { id: docRef.id, ...item };
@@ -58,6 +63,7 @@ export async function addMenuItem(item: Omit<MenuItem, 'id'>) {
 }
 
 export async function updateMenuItem(id: string, updates: Partial<MenuItem>) {
+  if (!hasFirebaseConfig) throw new Error("Firebase not configured");
   try {
     const docRef = doc(db, COLLECTION_NAME, id);
     await updateDoc(docRef, updates);
@@ -68,6 +74,7 @@ export async function updateMenuItem(id: string, updates: Partial<MenuItem>) {
 }
 
 export async function deleteMenuItem(id: string) {
+  if (!hasFirebaseConfig) throw new Error("Firebase not configured");
   try {
     await deleteDoc(doc(db, COLLECTION_NAME, id));
   } catch (e) {
@@ -77,16 +84,14 @@ export async function deleteMenuItem(id: string) {
 }
 
 export async function seedDefaultMenu() {
+  if (!hasFirebaseConfig) throw new Error("Firebase not configured");
   try {
     const batch = writeBatch(db);
-
-    // First, get all existing items to delete them (optional, but keep it consistent with previous logic)
     const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
     querySnapshot.forEach((doc) => {
       batch.delete(doc.ref);
     });
 
-    // Add default menu items
     DEFAULT_MENU.forEach((item) => {
       const { id, ...itemWithoutId } = item;
       const newDocRef = doc(collection(db, COLLECTION_NAME));

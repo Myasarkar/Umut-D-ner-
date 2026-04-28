@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { LogOut, Plus, Edit2, Trash2, Save, X, Utensils } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { auth, googleProvider } from '../lib/firebase';
+import { auth, googleProvider, hasFirebaseConfig } from '../lib/firebase';
 import logoUrl from '../assets/Umutdoner_Logo.png';
 import {
   MenuItem, 
@@ -22,6 +22,10 @@ export default function Admin() {
   const [editingItem, setEditingItem] = useState<Partial<MenuItem> | null>(null);
 
   useEffect(() => {
+    if (!hasFirebaseConfig) {
+      setIsLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
 
@@ -147,7 +151,9 @@ export default function Admin() {
            <img src={logoUrl} alt="Umut Döner" className="h-16 mx-auto mb-8" />
            <h1 className="text-2xl font-bold text-white mb-2">Yönetim Paneli</h1>
 
-           {!user ? (
+           {!hasFirebaseConfig ? (
+             <p className="text-amber-500 mb-8">Firebase yapılandırması eksik. Lütfen Vercel üzerinden ortam değişkenlerini ekleyin.</p>
+           ) : !user ? (
              <>
                <p className="text-neutral-400 mb-8">Devam etmek için Google hesabınızla giriş yapın.</p>
                <button
