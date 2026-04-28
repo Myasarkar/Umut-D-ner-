@@ -1,0 +1,205 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import logoUrl from '../assets/Umutdoner_Logo.png';
+import { getMenuItems, MenuItem } from '../lib/storage';
+
+export default function QrMenu() {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadMenu() {
+      try {
+        const items = await getMenuItems();
+
+        // Filter only available items
+        const availableItems = items.filter(item => item.isAvailable);
+
+        // Get unique categories
+        const cats = Array.from(new Set(availableItems.map(item => item.category)));
+
+        setMenuItems(availableItems);
+        setCategories(cats);
+      } catch (error) {
+        console.error("Menü yüklenirken hata oluştu:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadMenu();
+  }, []);
+
+  const nextCategory = () => {
+    if (currentCategoryIndex < categories.length - 1) setCurrentCategoryIndex(currentCategoryIndex + 1);
+  };
+
+  const prevCategory = () => {
+    if (currentCategoryIndex > 0) setCurrentCategoryIndex(currentCategoryIndex - 1);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin text-gold-500">
+           <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24">
+             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+           </svg>
+        </div>
+      </div>
+    );
+  }
+
+  if (categories.length === 0) {
+    return (
+      <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center p-4 text-center">
+        <img src={logoUrl} alt="Logo" className="h-20 mb-6" />
+        <p className="text-neutral-400 text-lg">Menü yakında eklenecektir veya yüklenemedi.</p>
+        <Link to="/" className="mt-8 text-gold-500 flex items-center gap-2 hover:text-gold-400">
+           <Home size={20} /> Ana Sayfaya Dön
+        </Link>
+      </div>
+    );
+  }
+
+  const currentCategory = categories[currentCategoryIndex];
+  const itemsInCurrentCategory = menuItems.filter(item => item.category === currentCategory);
+
+  const getCategoryBackground = (category: string) => {
+    switch(category.toLowerCase()) {
+      case 'et döner çeşitleri': return 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=2000&auto=format&fit=crop';
+      case 'tavuk döner çeşitleri': return 'https://images.unsplash.com/photo-1605333396914-25ee68202b28?q=80&w=2000&auto=format&fit=crop';
+      case 'kebap çeşitleri': return 'https://images.unsplash.com/photo-1663152778174-8b6eeae03578?q=80&w=2000&auto=format&fit=crop';
+      case 'sulu yemekler çeşitleri': return 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2000&auto=format&fit=crop';
+      case 'soğuk mezeler': return 'https://images.unsplash.com/photo-1606756891040-3ee96cb17cdd?q=80&w=2000&auto=format&fit=crop';
+      case 'içecekler': return 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=2000&auto=format&fit=crop';
+      default: return 'https://images.unsplash.com/photo-1644408107567-2f3b9cd41eb4?q=80&w=2000&auto=format&fit=crop';
+    }
+  };
+
+  const bgImage = getCategoryBackground(currentCategory);
+
+  return (
+    <div className="min-h-screen bg-[#111] text-[#E0E0E0] overflow-hidden flex flex-col font-sans relative">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={bgImage}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.2 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-[#111]" />
+            <img src={bgImage} alt="" className="w-full h-[50vh] object-cover opacity-60 mix-blend-overlay" />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Header */}
+      <header className="fixed top-0 inset-x-0 bg-black/80 backdrop-blur-md border-b border-gold-600/30 z-50 shadow-md">
+        <div className="py-3 px-4 flex justify-between items-center">
+          <Link to="/" className="text-gold-500 p-2 bg-neutral-900/50 rounded-full hover:bg-neutral-800 transition">
+            <Home size={20} />
+          </Link>
+          <div className="text-center">
+            <img src={logoUrl} alt="Umut Döner" className="h-14 mx-auto object-contain" />
+          </div>
+          <div className="w-10"></div> {/* Spacer for centering */}
+        </div>
+
+        {/* Category Navigation Bar */}
+        <div className="flex overflow-x-auto no-scrollbar py-2 px-4 gap-4 border-t border-gold-600/10 bg-black/40">
+          {categories.map((cat, idx) => (
+            <button
+              key={cat}
+              onClick={() => setCurrentCategoryIndex(idx)}
+              className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition-all uppercase tracking-wider ${
+                idx === currentCategoryIndex
+                ? 'bg-gold-500 text-black shadow-lg shadow-gold-500/20'
+                : 'bg-neutral-900 text-neutral-400 border border-neutral-800'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {/* Book Container */}
+      <main className="flex-1 mt-36 pt-6 pb-24 px-4 max-w-lg mx-auto w-full flex flex-col h-full relative z-10">
+        <div className="flex justify-between items-center mb-6 px-4">
+          <button 
+             onClick={prevCategory} 
+             disabled={currentCategoryIndex === 0}
+             className="p-2 text-gold-500 disabled:opacity-30 hover:bg-neutral-800 rounded-full transition"
+          >
+            <ChevronLeft size={28} />
+          </button>
+          
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white uppercase tracking-widest">{currentCategory}</h2>
+            <div className="h-0.5 w-12 bg-umutred-600 mx-auto mt-2"></div>
+          </div>
+          
+          <button 
+             onClick={nextCategory} 
+             disabled={currentCategoryIndex === categories.length - 1}
+             className="p-2 text-gold-500 disabled:opacity-30 hover:bg-neutral-800 rounded-full transition"
+          >
+            <ChevronRight size={28} />
+          </button>
+        </div>
+
+        <div className="relative flex-1">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentCategoryIndex}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-4 bg-black/60 backdrop-blur-md p-4 md:p-6 rounded-2xl border border-gold-600/20 min-h-[400px] shadow-2xl shadow-black"
+            >
+              <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                 <img src={logoUrl} alt="" className="w-32 h-32 object-contain grayscale" />
+              </div>
+              {itemsInCurrentCategory.map(item => (
+                <div key={item.id} className="flex flex-col gap-1 border-b border-dashed border-neutral-700/50 pb-3 last:border-0 last:pb-0 relative z-10">
+                  <div className="flex justify-between items-start gap-4">
+                    <h3 className="font-bold text-lg text-gold-400 leading-tight tracking-wide">{item.name}</h3>
+                    <div className="font-bold text-lg text-white whitespace-nowrap bg-neutral-900/80 px-2 py-0.5 border border-gold-600/30 rounded-lg">
+                      {item.price} ₺
+                    </div>
+                  </div>
+                  {item.description && (
+                    <p className="text-neutral-400 text-sm leading-relaxed">{item.description}</p>
+                  )}
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </main>
+
+      {/* Page Indicator */}
+      <div className="fixed bottom-6 inset-x-0 flex justify-center items-center gap-2 z-40">
+        {categories.map((_, idx) => (
+          <button 
+             key={idx}
+             onClick={() => setCurrentCategoryIndex(idx)}
+             className={`h-2 rounded-full transition-all duration-300 ${idx === currentCategoryIndex ? 'w-8 bg-gold-500' : 'w-2 bg-neutral-700'}`}
+             aria-label={`Go to page ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
