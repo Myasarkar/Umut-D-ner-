@@ -51,7 +51,6 @@ export default function Home() {
              autoPlay 
              muted 
              playsInline 
-             loop
              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
            />
         </div>
