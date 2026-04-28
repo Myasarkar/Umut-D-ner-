@@ -1,25 +1,11 @@
-import { useState, useEffect } from 'react';
 import { MapPin, Phone, Clock, QrCode, Utensils, Award, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import logoUrl from '../assets/Umutdoner_Logo.png';
 import videoUrl from '../assets/umutdoner_video.mp4';
 import bg1 from '../assets/arkaplan1.jpeg';
-import bg2 from '../assets/arkaplan2.jpeg';
-import bg3 from '../assets/arkaplan3.jpeg';
-import bg4 from '../assets/arkaplan4.jpeg';
 
 export default function Home() {
-  const [currentBg, setCurrentBg] = useState(0);
-  const backgrounds = [bg1, bg2, bg3, bg4];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % backgrounds.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
       {/* Navbar */}
@@ -40,31 +26,28 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section with Animated Background */}
+      {/* Hero Section with Fixed Background */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Animated Background Image */}
+        {/* Background Image - Fixed & Night Themed */}
         <div className="absolute inset-0 z-0">
-          {backgrounds.map((bg, idx) => (
-            <img
-              key={idx}
-              src={bg}
-              alt=""
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                idx === currentBg ? 'opacity-40' : 'opacity-0'
-              }`}
-            />
-          ))}
-          {/* Overlay to ensure text readability - Uniform dark layer */}
-          <div className="absolute inset-0 z-[1] bg-black/50"></div>
+          <img
+            src={bg1}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-60 brightness-75 contrast-125"
+          />
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 z-[1] bg-black/40"></div>
+          {/* Bottom fade out to separate from next section */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black to-transparent z-[2]"></div>
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
           <div className="flex-1 space-y-6">
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight drop-shadow-lg">
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight drop-shadow-2xl">
               Geleneksel Lezzetin <br />
               <span className="text-gold-500">Altın Standardı</span>
             </h1>
-            <p className="text-xl text-neutral-100 max-w-lg font-medium leading-relaxed drop-shadow-md">
+            <p className="text-xl text-neutral-100 max-w-lg font-medium leading-relaxed drop-shadow-lg">
                Yılların tecrübesiyle, özenle seçilen etleri ustalıkla işliyor; geleneksel döner lezzetini en doğal haliyle sunuyoruz. Her lokmada kalite ve güveni hissedin.
             </p>
             <div className="flex gap-4 pt-6">
@@ -73,7 +56,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="flex-1 w-full bg-neutral-900/40 backdrop-blur-md rounded-2xl aspect-[4/3] flex items-center justify-center border border-white/10 overflow-hidden relative group shadow-2xl">
+          <div className="flex-1 w-full bg-neutral-900/40 backdrop-blur-md rounded-2xl aspect-[4/3] flex items-center justify-center border border-white/20 overflow-hidden relative group shadow-2xl">
              <video
                src={videoUrl}
                autoPlay
@@ -86,7 +69,7 @@ export default function Home() {
       </section>
 
       {/* Hakkımızda Section */}
-      <section className="py-24 bg-neutral-950 border-t border-gold-600/10" id="hakkimizda">
+      <section className="py-24 bg-black border-t border-gold-600/10" id="hakkimizda">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Hakkımızda</h2>
@@ -94,7 +77,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="bg-neutral-900/50 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+            <div className="bg-neutral-900/30 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
               <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Utensils className="text-gold-500" size={32} />
               </div>
@@ -104,7 +87,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-neutral-900/50 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+            <div className="bg-neutral-900/30 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
               <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Award className="text-gold-500" size={32} />
               </div>
@@ -114,7 +97,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-neutral-900/50 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+            <div className="bg-neutral-900/30 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
               <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <ShieldCheck className="text-gold-500" size={32} />
               </div>
