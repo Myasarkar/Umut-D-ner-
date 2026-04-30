@@ -6,6 +6,24 @@ import videoUrl from '../assets/umutdoner_video.mp4';
 import bg1 from '../assets/arkaplan1.jpeg';
 
 export default function Home() {
+  const handleGetDirections = () => {
+    const lat = 40.976907;
+    const lng = 29.123013;
+    const label = "Umut Döner";
+
+    // Check if the device is iOS (iPhone/iPad/iPod)
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isIOS) {
+      // Universal link for Apple Maps on iOS
+      window.location.href = `maps://maps.apple.com/?daddr=${lat},${lng}&q=${label}`;
+    } else {
+      // Intent for Android/Google Maps or generic fallback
+      // This will trigger the app chooser on most mobile devices
+      window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
       {/* Navbar */}
@@ -134,16 +152,16 @@ export default function Home() {
             <h3 className="font-bold text-2xl text-white">Çalışma Saatleri</h3>
             <p className="text-neutral-400 text-lg">Her Gün<br/>10:00 - 22:00</p>
           </div>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=40.976907,29.123013" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-4 p-6 hover:bg-neutral-900/50 transition-colors rounded-xl md:rounded-none group cursor-pointer">
+          <div onClick={handleGetDirections} className="flex flex-col items-center gap-4 p-6 hover:bg-neutral-900/50 transition-colors rounded-xl md:rounded-none group cursor-pointer">
             <div className="bg-umutred-600/20 p-4 rounded-full group-hover:scale-110 transition-transform">
               <MapPin className="text-gold-500" size={32} />
             </div>
             <h3 className="font-bold text-2xl text-white group-hover:text-gold-400 transition-colors">Konum</h3>
             <p className="text-neutral-400 text-base text-sm">Profesör Dr. Necmettin Erbakan caddesi<br/>Engin sokak no 3/A<br/>Ataşehir / İstanbul</p>
-            <div className="mt-2 bg-neutral-800 text-gold-400 px-4 py-2 rounded-lg font-medium group-hover:bg-gold-500 group-hover:text-black transition-all text-xs border border-gold-600/30">
+            <button className="mt-2 bg-neutral-800 text-gold-400 px-4 py-2 rounded-lg font-medium group-hover:bg-gold-500 group-hover:text-black transition-all text-xs border border-gold-600/30">
               Yol Tarifi Al
-            </div>
-          </a>
+            </button>
+          </div>
           <div className="flex flex-col items-center gap-4 p-6 hover:bg-neutral-900/50 transition-colors rounded-xl md:rounded-none group">
             <div className="bg-umutred-600/20 p-4 rounded-full group-hover:scale-110 transition-transform">
               <Phone className="text-gold-500" size={32} />
