@@ -3,13 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Umut Döner - Gerçek Döner Lezzeti</title>
-    <meta name="description" content="Umut Döner restoranında odun ateşinde pişmiş gerçek, geleneksel döner lezzetini tadın. Menümüzü inceleyin veya sipariş verin." />
-    <meta name="keywords" content="Umut Döner, döner, restoran, yemek, iskender, istanbul, atasehir" />
+    <title>Umut Döner | Ataşehir'de Geleneksel Döner & Kebap Lezzeti</title>
+    <meta name="description" content="Ataşehir'in kalbinde, gerçek et döner, lezzetli kebaplar ve ev yapımı sulu yemekler. Umut Döner'in geleneksel lezzetlerini keşfedin, menümüzü inceleyin." />
+    <meta name="keywords" content="Umut Döner, Ataşehir döner, Ataşehir kebap, gerçek et döner, istanbul en iyi döner, iskender, tavuk döner, et döner, sulu yemek, adana kebap, urfa kebap, ataşehir restoran" />
     <link rel="icon" type="image/png" href="/src/assets/Umutdoner_Logo.png" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://umutdoner.com/" />
+    <meta property="og:title" content="Umut Döner | Ataşehir'de Geleneksel Döner & Kebap Lezzeti" />
+    <meta property="og:description" content="Ataşehir'in kalbinde, gerçek et döner ve geleneksel kebap lezzetleri." />
+    <meta property="og:image" content="/src/assets/Umutdoner_Logo.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://umutdoner.com/" />
+    <meta property="twitter:title" content="Umut Döner | Ataşehir'de Geleneksel Döner & Kebap Lezzeti" />
+    <meta property="twitter:description" content="Ataşehir'in kalbinde, gerçek et döner ve geleneksel kebap lezzetleri." />
+    <meta property="twitter:image" content="/src/assets/Umutdoner_Logo.png" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Umut Döner",
+        "image": "https://umutdoner.com/src/assets/Umutdoner_Logo.png",
+        "url": "https://umutdoner.com",
+        "telephone": "+902165758407",
+        "priceRange": "₺₺",
+        "menu": "https://umutdoner.com/menu",
+        "servesCuisine": ["Turkish", "Döner", "Kebap"],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Profesör Dr. Necmettin Erbakan caddesi Engin sokak no 3/A",
+          "addressLocality": "Ataşehir",
+          "addressRegion": "İstanbul",
+          "postalCode": "34750",
+          "addressCountry": "TR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 40.976907,
+          "longitude": 29.123013
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "10:00",
+          "closes": "22:00"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- SEO Content for Search Engines -->
+    <div style="display:none;">
+      <h1>Umut Döner Ataşehir</h1>
+      <p>Ataşehir'de en iyi döner ve kebap deneyimi. Gerçek et döner, tavuk döner, İskender, Adana kebap, Urfa kebap, çorba ve ev yemekleri.</p>
+      <ul>
+        <li>Et Döner (Porsiyon, Dürüm, Pilav Üstü)</li>
+        <li>Tavuk Döner (Porsiyon, Dürüm, Ekmek Arası)</li>
+        <li>İskender Kebap</li>
+        <li>Adana ve Urfa Kebap</li>
+        <li>Günlük Sulu Yemekler ve Çorbalar</li>
+        <li>Soğuk Mezeler ve Tatlılar</li>
+      </ul>
+    </div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

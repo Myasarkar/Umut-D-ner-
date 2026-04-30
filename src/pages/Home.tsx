@@ -50,7 +50,7 @@ export default function Home() {
         <div className="absolute top-0 inset-x-0 h-[600px] md:h-full z-0">
           <img
             src={bg1}
-            alt=""
+            alt="Umut Döner Ataşehir - Geleneksel Döner Lezzeti"
             className="absolute inset-0 w-full h-full object-cover opacity-60 brightness-75 contrast-125"
           />
           {/* Overlay to ensure text readability */}
