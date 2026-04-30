@@ -1,4 +1,4 @@
-import { MapPin, Phone, Clock, QrCode, Utensils, Award, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, Clock, QrCode, Utensils, Award, ShieldCheck, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import logoUrl from '../assets/Umutdoner_Logo.png';
@@ -80,7 +80,7 @@ export default function Home() {
             <div className="h-1.5 w-24 bg-gold-500 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-neutral-900/30 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
               <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Utensils className="text-gold-500" size={32} />
@@ -108,6 +108,16 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-white mb-4">Güvenilir Lezzet</h3>
               <p className="text-neutral-400 leading-relaxed text-sm">
                 Müşteri memnuniyetini ve gıda güvenliğini her şeyin önünde tutuyoruz. Ailenizle birlikte güvenle tüketebileceğiniz sağlıklı lezzetler sunuyoruz.
+              </p>
+            </div>
+
+            <div className="bg-neutral-900/30 p-8 rounded-3xl border border-gold-600/10 hover:border-gold-500/30 transition-colors text-center group">
+              <div className="bg-gold-500/10 w-16 h-16 flex items-center justify-center rounded-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <CheckCircle className="text-gold-500" size={32} />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Helal Gıda</h3>
+              <p className="text-neutral-400 leading-relaxed text-sm">
+                Tüm ürünlerimizde %100 helal kesim etler kullanılmaktadır. İslami usullere uygun, denetlenen ve sertifikalı tedarikçilerle çalışıyoruz.
               </p>
             </div>
           </div>
