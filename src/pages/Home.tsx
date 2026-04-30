@@ -42,15 +42,15 @@ export default function Home() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-24 w-full flex flex-col md:flex-row items-center gap-12 relative z-10">
-          <div className="flex-1 space-y-20">
-            <h1 className="text-[37px] md:text-7xl font-extrabold tracking-tight text-white leading-tight drop-shadow-2xl relative -top-[5px] md:top-0">
+          <div className="flex-1 flex flex-col">
+            <h1 className="text-[37px] md:text-7xl font-extrabold tracking-tight text-white leading-tight drop-shadow-2xl relative -top-[5px] md:top-0 mb-20">
               Geleneksel Lezzetin <br />
               <span className="text-gold-500">Altın Standardı</span>
             </h1>
-            <p className="text-xl text-neutral-100 max-w-lg font-medium leading-relaxed drop-shadow-lg">
+            <p className="text-xl text-neutral-100 max-w-lg font-medium leading-relaxed drop-shadow-lg mb-8 md:mb-20">
                Ustalıkla hazırlanan döner, özenle seçilen malzemeler ve değişmeyen kalite anlayışı.
             </p>
-            <div className="flex gap-4 pt-6">
+            <div className="flex gap-4">
               <Link to="/menu" className="bg-gold-500 text-black px-8 py-3.5 rounded-xl font-bold hover:bg-gold-400 transition-all shadow-xl shadow-gold-500/20 hover:shadow-gold-500/40 text-lg">
                 Menüyü İncele
               </Link>
