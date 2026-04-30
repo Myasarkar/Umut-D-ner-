@@ -94,7 +94,7 @@ export default function QrMenu() {
       return drinksBg;
 
 
-    return 'https://i.pinimg.com/1200x/22/c6/24/22c6245ca9e09b627eb1cc1edc54c853.jpg';
+    return 'https://i.pinimg.com/1200x/20/08/a8/2008a8671dc487a5f66a8aa1be15e9e3.jpg';
   };
 
   const bgImage = getCategoryBackground(currentCategory);
