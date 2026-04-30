@@ -57,8 +57,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mobile Spacer - Adjusted to ensure video stays in pure black zone */}
-          <div className="md:hidden h-20"></div>
+          {/* Mobile Spacer - Reduced for tighter layout */}
+          <div className="md:hidden h-4"></div>
 
           <div className="flex-1 w-full bg-neutral-900/40 backdrop-blur-md rounded-2xl aspect-[4/3] flex items-center justify-center border border-white/20 overflow-hidden relative group shadow-2xl">
              <video
