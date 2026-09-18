@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { auth, googleProvider, hasFirebaseConfig } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db, googleProvider, hasFirebaseConfig } from '../lib/firebase';
 import {
   MenuItem,
   getMenuItems,
@@ -169,15 +170,20 @@ export default function Admin() {
       setIsLoading(false);
       return;
     }
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      if (currentUser) {
-        const adminEmailConfig = import.meta.env.VITE_ADMIN_EMAIL || '';
-        const authorizedEmails = adminEmailConfig.split(',').map((email: string) => email.trim().toLowerCase());
-        if (authorizedEmails.includes(currentUser.email?.toLowerCase() || '') || !adminEmailConfig) {
-          setIsAuthorized(true);
-          loadMenu();
-        } else {
+      if (currentUser && currentUser.email) {
+        try {
+          const adminDoc = await getDoc(doc(db, 'admins', currentUser.email.toLowerCase()));
+          if (adminDoc.exists()) {
+            setIsAuthorized(true);
+            loadMenu();
+          } else {
+            setIsAuthorized(false);
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.error('Admin kontrol hatası:', error);
           setIsAuthorized(false);
           setIsLoading(false);
         }
