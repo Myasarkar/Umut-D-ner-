@@ -1,3 +1,36 @@
+/**
+ * =============================================
+ *  ADMIN PANELİ - DEĞİŞİKLİK GEÇMİŞİ
+ * =============================================
+ *
+ * Tarih: 2026-09-18
+ *
+ * 1. TASARIM SADELEŞTİRME
+ *    - Tüm animasyonlar kaldırıldı (framer-motion sürükle-bırak)
+ *    - Tüm dekoratif ikonlar kaldırıldı (lucide-react)
+ *    - Logo ve resimler kaldırıldı
+ *    - Altın/siyah tema, gradyanlar, gölgeler, backdrop-blur kaldırıldı
+ *    - Beyaz arkaplan, siyah yazı, düz kenarlıklarla sade tasarım yapıldı
+ *
+ * 2. LİSTE YAPISI
+ *    - Açılır-kapanır (akordeon) kategori listeleri kaldırıldı
+ *    - Tüm kategoriler her zaman açık olacak şekilde düzenlendi
+ *
+ * 3. SIRALAMA BUTONLARI
+ *    - Kategorileri yukarı/aşağı taşımak için ▲ ▼ butonları eklendi
+ *    - Ürünleri kendi kategorisi içinde yukarı/aşağı taşımak için ▲ ▼ butonları eklendi
+ *    - Sıralama değişiklikleri otomatik olarak Firebase'e kaydediliyor
+ *
+ * 4. GÜVENLİK GÜNCELLEMESİ
+ *    - VITE_ADMIN_EMAIL ortam değişkeni kaldırıldı (tarayıcıda görünüyordu)
+ *    - Admin yetki kontrolü Firestore "admins" koleksiyonuna taşındı
+ *    - Her kullanıcı sadece kendi e-postasını sorgulayabilir (güvenli)
+ *    - Yeni admin eklemek için Firebase Console > Firestore > admins koleksiyonuna
+ *      doküman eklenmesi yeterli (Document ID = e-posta adresi, role = "admin")
+ *
+ * =============================================
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
